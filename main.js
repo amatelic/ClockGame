@@ -2,66 +2,70 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 //varibles 
 var circle, floor, longLine, shortLine, 
-handle1, handle2, randMinuts, randHours;
+handle1, handle2, randMinuts, randHours, TimeDisplay, Score,
+shortTouch, longTouch;
+// variable for correct answers
+var user_answers = [];
 
 function preload() {
-  // loading images
+  // loading images 
   game.load.spritesheet('balls', 'assets/balls.png', 17, 17);
-  game.load.spritesheet('clock', 'assets/clock.png', 400, 400);
+  game.load.spritesheet('clock', 'assets/clock1.png', 398, 400);
+  game.load.spritesheet('true', 'assets/symbols.gif', 60, 60);
+  game.load.spritesheet('false', 'assets/symbols.gif', 60,60);
 }
 
 function create() {
-    clock = game.add.sprite(200, 100, 'clock', 0);
-    handle1 = createHandler(400, 200);
-    handle2 = createHandler(400, 100);
-
+    //creating lines
     longLine = new Phaser.Line();
     shortLine = new Phaser.Line();
 
-    randMinuts = MathClock.ranGenerator(0, 60);
-    randHours = MathClock.ranGenerator(0, 12);
-  
-    var style = { font: "18px Arial", fill: "#ff0044", align: "center" };
-    var text = game.add.text(20, 100, "- Please correct time \n "
-        + randHours + " hours " + randMinuts + "minuts", style);
+    // background = game.add.tileSprite(0, 0, 800, 600, 'background');
+    // add clock
+    clock = game.add.sprite(200, 100, 'clock', 1);
+    indicatorLong = createHandler(400, 100);
+    indicatorShort = createHandler(400, 200); 
+
+    //generating hours and minutes
+        randMinuts = MathClock.ranGenerator(0, 60);
+        randHours = MathClock.ranGenerator(0, 12);
+
+        var style = { font: "18px Arial", fill: "#ff0044", align: "center" };
+        TimeDisplay = game.add.text(20, 100, "- Please correct time \n "
+            + randHours + " hours " + randMinuts + "minuts", style);
+
+        Score = game.add.text(650, 100, "Score:",style);
 
 }
 function render() {
+    //displaying lines
     game.debug.geom(longLine);
     game.debug.geom(shortLine);
-    // game.debug.lineInfo(longLine, 152, 152);
-
-    // geting the degress
-    var degress = MathClock.toDegress( longLine.angle )
-    var degress2 = MathClock.toDegress( shortLine.angle)
-
-    var minuts = MathClock.degToSec( degress2 ) ;
-    var hour = MathClock.degToHour( degress ) ;
-
-    isRight(hour, minuts);
 }
 
 function update() {
-    (function(){
-        console.log('test');
-    }())
-    longLine.fromSprite(handle1, {x:400, y: 300}, false);
-    shortLine.fromSprite(handle2, {x:400, y: 300}, false);
-}
 
+    shortLine.fromSprite(indicatorShort, {x:400, y: 300}, false);     
+    longLine.fromSprite(indicatorLong, {x:400, y: 300}, false);
+    // geting the degress
+    var degress = MathClock.toDegress( shortLine.angle );
+    var degress2 = MathClock.toDegress( longLine.angle);
 
+    var minuts = MathClock.degToSec( degress2 );
+    var hour = MathClock.degToHour( degress );
 
-function isRight ( hour, minuts ) {
-    // console.log(randMinuts == minuts && randHours == hour);
-    // console.log(randHours, randMinuts);
-    // console.log( hour, minuts);
-    if (randMinuts == minuts && randHours == hour) {   
-        swal({title:"Good job!", text: "The answer is right!", type:"success",closeOnConfirm: false}, function(isConfirm) {
-            if(isConfirm){
-                document.location.reload(true);
-            }
-        });
-    };
+    //checking if every thing is right
+    var shortTouch = indicatorShort.input.pointerUp();
+    var longTouch = indicatorLong.input.pointerUp();
+    
+    // checking on mouse down
+    if(shortTouch && longTouch){
+        Roules.isRight(hour, minuts, game);
+        indicatorShort.input.reset();
+        indicatorLong.input.reset();
+        indicatorShort.input.start();
+        indicatorLong.input.start();
+    }
 }
 
 function createHandler(x, y) {

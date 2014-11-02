@@ -3,16 +3,14 @@ var MathClock = (function() {
 
 	var MathClock = {
 		degToSec: function( deg ) {
-			var bla = deg + 90;
 			var d = Math.floor(deg) * 10;
 			var time = Math.floor(d / 60) + 15;
-			return (time > 60)?time - 60:time ;
+			return (time > 60)? time - 60: time;
 		},
 		degToHour: function( deg ) {
-			var bla = deg + 90;
 		    var d = Math.floor(deg) * 10;
 		    var time = Math.floor(d / 60) + 15;
-		    time = (time > 60)?time - 60:time;
+		    time = (time > 60)? time - 60: time;
 		    return Math.floor(time/5);
 		},
 		toDegress: function( angle ) {
