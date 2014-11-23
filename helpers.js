@@ -6,23 +6,6 @@ var MathClock = (function() {
 	'use strict';
 
 	var MathClock = {
-		degToSec: function( deg ) {
-			var d = (Math.floor(deg) + 90) * 10 ;
-			console.log(d);
-			var time = Math.floor(d / 60);
-
-			return (time > 60) ? time - 60 : time;
-		},
-		degToHour: function( deg ) {
-		    var d = Math.floor(deg) * 10;
-		    var time = Math.floor(d / 60) + 15;
-		    time = (time > 60) ? time - 60 : time;
-		    return Math.floor(time/5);
-		},
-		toDegress: function( angle ) {
-			var radian = angle + Math.PI;
-			return  Phaser.Math.radToDeg( radian );	    
-		},
 		ranGenerator: function(min, max){
     		return Math.floor(Math.random() * (max - min)) + min;
 		}
@@ -74,8 +57,8 @@ var Logic = (function() {
 
 	var DateDisplay =  function() {
 		// different hour and minut
-		randMinuts = MathClock.ranGenerator(0, 60);
-        randHours = MathClock.ranGenerator(0, 12);
+		randMinuts = MathClock.ranGenerator(1, 60);
+        randHours = MathClock.ranGenerator(1, 12);
 
         return TimeDisplay.setText("- Please correct time \n "
         	+ randHours + " hours " + randMinuts + "minuts");
@@ -102,11 +85,7 @@ var Logic = (function() {
         		Logic.endOfGame();
         	}
 
-			//Reseting touch and mouse events 
-			// indicatorShort.input.reset();
-   //      	indicatorLong.input.reset();
-   //      	indicatorShort.input.start();
-   //      	indicatorLong.input.start();
+
 		},
 		endOfGame: function() {
 			var reduce = answers.reduce(function(a, b) {
@@ -114,8 +93,6 @@ var Logic = (function() {
 			});
 			var correct = scoreLength - reduce;
 			Display.FinalScore( correct, scoreLength );
-			// indicatorShort.input.stop();
-   //      	indicatorLong.input.stop();
 		}
 
 	};
