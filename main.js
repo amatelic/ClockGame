@@ -1,21 +1,15 @@
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 
 //varibles 
-var circleLong,circleShort, floor,
-handle1, handle2, randMinuts, randHours, TimeDisplay, Score,
-shortTouch, longTouch;
+var circleLong,circleShort, TimeDisplay, Score, button;
+var hourArrow = 12;
+var minutArrow = 60;
 
-var time; // for dev
-
-var button;
 
 // variable for correct answers
 var user_answers = [];
 var shortArrows;
-var compare = 1;
 var platform;
-var hourArrow = 12;
-var minutArrow = 60;
 
 function preload() {
   // loading images 
@@ -28,6 +22,10 @@ function preload() {
 
 function create() {
          
+    // change background color
+
+    this.game.stage.backgroundColor = '#6d84b4';
+
     // add clock
 
     clock = game.add.sprite(200, 100, 'clock', 1);
@@ -43,34 +41,32 @@ function create() {
     };
 
     // Creating hit area
-    circleShort = new Phaser.Circle(game.world.centerX, game.world.centerY, 170);
+    circleShort = new Phaser.Circle(game.world.centerX, game.world.centerY, 180);
     circleLong = new Phaser.Circle(game.world.centerX, game.world.centerY, 390);
 
     /* Creating long and short arrows */
-    longArrows = positionArrows(longArrow, 60, 6);
+    longArrows = positionArrows(longArrow, 12, 30);
     shortArrows = positionArrows(shortArrow, 12, 30);
     // display first sprite and hide all the others
     displaySprite(shortArrows, 12);
-    displaySprite(longArrows, 60);
+    displaySprite(longArrows, 12);
 
     //generating hours and minutes
-    randMinuts = MathClock.ranGenerator(1, 60);
-    randHours = MathClock.ranGenerator(1, 12);
+    Logic.chooseNumbers(2); 
 
-    button = game.add.button(10,470, 'button', actionOnClick, this, 2, 1, 0);
+    button = game.add.button(10,420, 'button', actionOnClick, this, 0, 0, 0);
+    button1 = game.add.button(600,420, 'button', actionOnClick, this, 0, 0, 0);
+    button2 = game.add.button(10,120, 'button', actionOnClick, this, 0, 0, 0);
 
     var style = Display.textDisplay(); 
-    TimeDisplay = game.add.text(20, 100, "- Please correct time \n "
-    + randHours + " hours " + randMinuts + "minuts", style);
+    TimeDisplay = game.add.text(20, 60, "- Nastavi kazalec na uri za čas "
+    + Display.Digital(randHours) + " : " + Display.Digital(randMinuts), style);
 
     game.input.onDown.add(onTouche, this);
 }
 
 function render() {
 
-    //displaying lines
-    game.debug.pointer(game.input.mousePointer);
-    game.debug.pointer(game.input.pointer1);
     // game.debug.geom(circleShort,'#cfffff');
     // game.debug.geom(circleLong,'#aabbcc');
     // game.debug.text('Diameter : '+circle.diameter,50,200);
@@ -110,7 +106,7 @@ function onTouche(pointer) {
     }else{
         if ( circleLong.contains(pointer.x, pointer.y) )
         {
-           minutArrow =  displayArrows(longArrows, angleInDegrees, 60, 6);
+          minutArrow = (displayArrows(longArrows, angleInDegrees, 12, 30) *5);
         }
         
     }
